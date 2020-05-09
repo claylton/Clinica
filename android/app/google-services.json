@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "948780868614",
+    "firebase_url": "https://clinica-prova.firebaseio.com",
+    "project_id": "clinica-prova",
+    "storage_bucket": "clinica-prova.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948780868614:android:36ac8a72876cc01df40f87",
+        "android_client_info": {
+          "package_name": "com.example.clinica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "948780868614-0rklpdre3fav4f16npt0imkekgkftvje.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDKgDmO4kPUAaP1CApDuLr5J2JtzpPoQSA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "948780868614-0rklpdre3fav4f16npt0imkekgkftvje.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
