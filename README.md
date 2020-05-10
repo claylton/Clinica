@@ -1,6 +1,8 @@
-# clinica
+# Clínica
 
-A new Flutter project.
+Flutter + Firebase
+
+Cadastro de usuário e agendamento de consultas
 
 ## Getting Started
 
