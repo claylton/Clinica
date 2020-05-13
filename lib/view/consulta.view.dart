@@ -52,21 +52,23 @@ class _ConsultaViewState extends State<ConsultaView> {
                 children: <Widget>[
                   //Container(
                   FlatButton(
-                      color: Theme.of(context).primaryColor,
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ListaMedico(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        "Médicos disponíveis",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(1.0))),
+                    color: Theme.of(context).primaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ListaMedico(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Médicos disponíveis",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    // shape: new RoundedRectangleBorder(
+                    //   borderRadius: new BorderRadius.circular(1.0),
+                    // ),
+                  ),
                   //),
                   Padding(
                     padding: const EdgeInsets.only(

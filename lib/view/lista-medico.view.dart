@@ -24,10 +24,14 @@ class _ListaMedicoState extends State<ListaMedico> {
 
   @override
   void initState() {
-    super.initState();
     medico = new Medico("");
     refMed = db.reference().child('usuarios');
-    var userMedico = FirebaseDatabase.instance
+    loadMedicos().then((value) {});
+    super.initState();
+  }
+
+  Future<Null> loadMedicos() async {
+    await FirebaseDatabase.instance
         .reference()
         .child('usuarios')
         .child('Médico')
@@ -37,8 +41,6 @@ class _ListaMedicoState extends State<ListaMedico> {
       values.forEach(
         (key, value) {
           medicoList.add(value);
-
-          print(value);
         },
       );
     });
@@ -83,46 +85,36 @@ class _ListaMedicoState extends State<ListaMedico> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        color: Theme.of(context).primaryColor,
-        child: Form(
-          child: Column(
-            children: [
-              Flexible(
-                flex: 0,
-                child: Center(
-                  child: Form(
-                    key: _formKey,
-                    child: Flex(
-                      direction: Axis.vertical,
-                      children: <Widget>[
-                        // ListView.builder(
-                        //   itemCount: medicoList.length,
-                        //   itemBuilder: (context, index) {
-                        //     var medico = medicoList[index];
-
-                        //     // return ListTile(
-                        //     //   title: Text(
-                        //     //     medico.toString(),
-                        //     //   ),
-                        //     // );
-                        //   },
-                        // ),
-                        // Column(children: [
-                        //     medicoList[0],
-
-                        //   Container(
-                        //     child: Text(),
-                        //   ),
-                        // ],)
-                      ],
+      body: ListView.builder(
+        itemCount: medicoList.length,
+        itemBuilder: (context, index) {
+          var medico = medicoList[index];
+          print(medicoList);
+          return Row(
+            children: <Widget>[
+              Expanded(
+                child: FlatButton(
+                  padding: EdgeInsets.all(18),
+                  child: Text(
+                    medico != null
+                        ? "${medico['nome']} - ${medico['Especialidade']}"
+                        : "AAA",
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
                   ),
+                  shape: Border(
+                    bottom: BorderSide(
+                      color: Colors.black12,
+                    ),
+                  ),
+                  splashColor: Colors.black12,
+                  onPressed: () => null,
                 ),
-              ),
+              )
             ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }
