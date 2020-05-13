@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:clinica/models/medico.model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +18,61 @@ class _ListaMedicoState extends State<ListaMedico> {
   DatabaseReference refMed =
       FirebaseDatabase.instance.reference().child("usuarios");
 
+  var medicoList = [];
+  Medico medico;
+  final FirebaseDatabase db = FirebaseDatabase.instance;
+
+  @override
+  void initState() {
+    super.initState();
+    medico = new Medico("");
+    refMed = db.reference().child('usuarios');
+    var userMedico = FirebaseDatabase.instance
+        .reference()
+        .child('usuarios')
+        .child('Médico')
+        .once()
+        .then((DataSnapshot snapshot) {
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach(
+        (key, value) {
+          medicoList.add(value);
+
+          print(value);
+        },
+      );
+    });
+  }
+
+  Future loadUserType() async {
+    StreamSubscription<Event> user = db
+        .reference()
+        .child("usuarios")
+        .child(prefs.getString("currentUserId"))
+        .onValue
+        .listen((Event event) {
+      Map currentUser = event.snapshot.value;
+      //prefs.setString("currentUserName", currentUser['nome']);
+      prefs.setString("currentUserType", currentUser['usuario']);
+      setState(() {});
+    });
+  }
+
+  Future loadUserInfo() async {
+    StreamSubscription<Event> user = db
+        .reference()
+        .child("usuarios")
+        .child("${prefs.getString("currentUserType")}")
+        .child(prefs.getString("currentUserId"))
+        .onValue
+        .listen((Event event) {
+      Map currentUser = event.snapshot.value;
+      prefs.setString("currentUserName", currentUser['nome']);
+      //prefs.setString("currentUserType", currentUser['usuario']);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,31 +87,38 @@ class _ListaMedicoState extends State<ListaMedico> {
         color: Theme.of(context).primaryColor,
         child: Form(
           child: Column(
-            key: _formKey,
             children: [
-              SizedBox(
-                height: 40,
-              ),
-              Container(
-                padding: EdgeInsets.only(
-                  left: 40,
-                  right: 40,
+              Flexible(
+                flex: 0,
+                child: Center(
+                  child: Form(
+                    key: _formKey,
+                    child: Flex(
+                      direction: Axis.vertical,
+                      children: <Widget>[
+                        // ListView.builder(
+                        //   itemCount: medicoList.length,
+                        //   itemBuilder: (context, index) {
+                        //     var medico = medicoList[index];
+
+                        //     // return ListTile(
+                        //     //   title: Text(
+                        //     //     medico.toString(),
+                        //     //   ),
+                        //     // );
+                        //   },
+                        // ),
+                        // Column(children: [
+                        //     medicoList[0],
+
+                        //   Container(
+                        //     child: Text(),
+                        //   ),
+                        // ],)
+                      ],
+                    ),
+                  ),
                 ),
-                margin: EdgeInsets.only(
-                  bottom: 35,
-                  left: 30,
-                  right: 30,
-                ),
-                color: Colors.white,
-                child: ListView.builder(
-                  itemBuilder: (BuildContext context, int index) {},
-                  // title: Text(
-                  //   "Doutor(a): Claylton ",
-                  //   style: TextStyle(fontSize: 18),
-                  // ),
-                  // subtitle: Text("Especialidade: Clínico Geral"),
-                ),
-                // color: Colors.white,
               ),
             ],
           ),

@@ -17,6 +17,8 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
   SharedPreferences prefs;
   FirebaseUser user;
 
+  //Medico medico = new Medico(),
+
   String _nome;
   String _email;
   String _tipo = "Médico";
@@ -61,6 +63,7 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
                 .child(user.uid)
                 .set({
               "nome": _nome,
+              "Especialidade": _especialidade,
             });
           }
 
@@ -206,35 +209,34 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
                         //   },
                         //   onSaved: (input) => _crm = input,
                         // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Especialidade",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Especialidade Inválida';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _especialidade = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 15,
-                        // ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          decoration: InputDecoration(
+                            labelText: "Especialidade",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Especialidade Inválida';
+                            }
+                            return null;
+                          },
+                          onSaved: (input) => _especialidade = input,
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
                         TextFormField(
                           keyboardType: TextInputType.text,
                           obscureText: true,
