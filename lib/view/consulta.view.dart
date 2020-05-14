@@ -36,13 +36,18 @@ class _ConsultaViewState extends State<ConsultaView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //body: SingleChildScrollView(
-      //child:
+      appBar: AppBar(
+        title: Text(
+          "Clínica Saitama",
+          style: Theme.of(context).textTheme.headline5,
+        ),
+        centerTitle: true,
+      ),
       body: Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(
-              top: 80,
+              //top: 80,
               left: 40.0,
               right: 40.0,
             ),
@@ -50,26 +55,6 @@ class _ConsultaViewState extends State<ConsultaView> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  //Container(
-                  FlatButton(
-                    color: Theme.of(context).primaryColor,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ListaMedico(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Médicos disponíveis",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    // shape: new RoundedRectangleBorder(
-                    //   borderRadius: new BorderRadius.circular(1.0),
-                    // ),
-                  ),
-                  //),
                   Padding(
                     padding: const EdgeInsets.only(
                       top: 20,
@@ -121,14 +106,15 @@ class _ConsultaViewState extends State<ConsultaView> {
               bottom: 10,
             ),
             child: TDButton(
-              text: "Marcar",
+              text: "Médicos Disponiveis",
               width: double.infinity,
               callback: () {
-                if (!_formKey.currentState.validate()) {
-                  return;
-                }
-
-                _formKey.currentState.save();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListaMedico(),
+                  ),
+                );
               },
             ),
           ),
