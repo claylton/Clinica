@@ -40,7 +40,9 @@ class _ListaMedicoState extends State<ListaMedico> {
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach(
         (key, value) {
-          medicoList.add(value);
+          setState(() {
+            medicoList.add(value);
+          });
         },
       );
     });
