@@ -1,27 +1,23 @@
-import 'package:clinica/view/login.view.dart';
+import 'package:clinica/models/paciente.model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 
-class SignupPacienteView extends StatelessWidget {
+class SignupPacienteView extends StatefulWidget {
+  @override
+  _SignupPacienteViewState createState() => _SignupPacienteViewState();
+}
+
+class _SignupPacienteViewState extends State<SignupPacienteView> {
   final _formKey = GlobalKey<FormState>();
-  String _nome;
-  String _tipo = "Paciente";
-  String _nascimento;
-  String _telefone;
-  String _rg;
-  String _cpf;
-  String _rua;
-  String _bairro;
-  String _nEndereco;
-  String _email;
-  String _senha;
+
+  Paciente paciente = new Paciente();
 
   SharedPreferences prefs;
+
   FirebaseUser user;
+
   FirebaseAuth auth = FirebaseAuth.instance;
 
   Future loadPref() async {
@@ -32,51 +28,7 @@ class SignupPacienteView extends StatelessWidget {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      try {
-        AuthResult result = await auth.createUserWithEmailAndPassword(
-            email: _email, password: _senha);
-        user = result.user;
-
-        if (user != null) {
-          await FirebaseDatabase.instance
-              .reference()
-              .child('usuarios')
-              .child(user.uid)
-              .set({
-            "email": _email,
-            "senha": _senha,
-            "usuario": _tipo,
-          });
-
-          if (_tipo == "Paciente") {
-            await FirebaseDatabase.instance
-                .reference()
-                .child('usuarios')
-                .child('Paciente')
-                .child(user.uid)
-                .set({
-              "nome": _nome,
-            });
-          }
-
-          FirebaseAuth.instance.signOut();
-
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => LoginView(),
-          ));
-        } else {
-          Fluttertoast.showToast(msg: "Cadastro inválido");
-        }
-      } on PlatformException catch (e) {
-        if (e.code == "ERROR_EMAIL_ALREADY_IN_USE") {
-          Fluttertoast.showToast(msg: "Esse email já existe!");
-        } else if (e.code == "ERROR_WEAK_PASSWORD") {
-          Fluttertoast.showToast(
-              msg: "A senha deve ter no mínimo 6 caracteres");
-        } else {
-          Fluttertoast.showToast(msg: "Cadastro inválido");
-        }
-      }
+      paciente.createPaciente(context);
     }
   }
 
@@ -90,7 +42,6 @@ class SignupPacienteView extends StatelessWidget {
       body: SingleChildScrollView(
         child: Container(
           padding: EdgeInsets.only(
-            //top: 60,
             left: 20,
             right: 20,
             bottom: 40,
@@ -147,193 +98,113 @@ class SignupPacienteView extends StatelessWidget {
                             }
                             return null;
                           },
-                          onSaved: (input) => _nome = input,
+                          onSaved: (value) => paciente.setNome(value),
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        // TextFormField(
-                        //   // autofocus: true,
-                        //   keyboardType: TextInputType.emailAddress,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Data de Nascimento",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Data de nascimento Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _nascimento = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Telefone",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Telefone Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _telefone = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 15,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "RG",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'RG Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _rg = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "CPF",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'CPF Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _cpf = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Endereço",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Endereço Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _rua = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Bairro",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Bairro Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _bairro = input,
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // TextFormField(
-                        //   keyboardType: TextInputType.text,
-                        //   obscureText: true,
-                        //   decoration: InputDecoration(
-                        //     labelText: "Número Endereço",
-                        //     labelStyle: TextStyle(
-                        //       color: Theme.of(context).primaryColor,
-                        //       fontWeight: FontWeight.w400,
-                        //       fontSize: 16,
-                        //     ),
-                        //   ),
-                        //   style: TextStyle(
-                        //     fontSize: 20,
-                        //     color: Theme.of(context).primaryColor,
-                        //   ),
-                        //   validator: (value) {
-                        //     if (value.isEmpty) {
-                        //       return 'Número Inválido';
-                        //     }
-                        //     return null;
-                        //   },
-                        //   onSaved: (input) => _nEndereco = input,
-                        // ),
                         TextFormField(
-                          // autofocus: true,
-                          keyboardType: TextInputType.text,
+                          keyboardType: TextInputType.datetime,
+                          decoration: InputDecoration(
+                            labelText: "Data de Nascimento",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Data de nascimento Inválido';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => paciente.setNascimento(value),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            labelText: "Telefone",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'Telefone Inválido';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => paciente.setTelefone(value),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: "RG",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'RG Inválido';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => paciente.setRG(value),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            labelText: "CPF",
+                            labelStyle: TextStyle(
+                              color: Theme.of(context).primaryColor,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 16,
+                            ),
+                          ),
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return 'CPF Inválido';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => paciente.setCPF(value),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: "E-mail",
                             labelStyle: TextStyle(
@@ -352,7 +223,7 @@ class SignupPacienteView extends StatelessWidget {
                             }
                             return null;
                           },
-                          onSaved: (value) => _email = value,
+                          onSaved: (value) => paciente.setEmail(value),
                         ),
                         SizedBox(
                           height: 15,
@@ -378,7 +249,7 @@ class SignupPacienteView extends StatelessWidget {
                             }
                             return null;
                           },
-                          onSaved: (value) => _senha = value,
+                          onSaved: (value) => paciente.setSenha(value),
                         ),
                         SizedBox(
                           height: 40,
@@ -401,17 +272,6 @@ class SignupPacienteView extends StatelessWidget {
                             onPressed: () {
                               if (_formKey.currentState.validate()) {
                                 _formKey.currentState.save();
-                                print("Name $_nome");
-                                print("Name $_tipo");
-                                // print("Name $_nascimento");
-                                // print("Name $_telefone");
-                                // print("Password $_rg");
-                                // print("Password $_cpf");
-                                // print("Password $_rua");
-                                // print("Password $_bairro");
-                                // print("Password $_nEndereco");
-                                print("Password $_email");
-                                print("Password $_senha");
 
                                 register(context);
                               }
@@ -433,11 +293,3 @@ class SignupPacienteView extends StatelessWidget {
     );
   }
 }
-
-// void register (BuildContext context) async {
-//   try {
-//     FirebaseUser
-//   } catch (e) {
-//     print(e);
-//   }
-// }

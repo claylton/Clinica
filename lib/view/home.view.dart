@@ -29,7 +29,6 @@ class _HomeViewState extends State<HomeView> {
       setState(() {
         prefs = value;
       });
-      loadUserType();
       loadUserInfo();
     });
     super.initState();
@@ -39,37 +38,17 @@ class _HomeViewState extends State<HomeView> {
     return await SharedPreferences.getInstance();
   }
 
-  Future loadUserType() async {
-    //StreamSubscription<Event> user = db
-    StreamSubscription<Event> user = db
-        .reference()
-        .child("usuarios")
-        .child(prefs.getString("currentUserId"))
-        .onValue
-        .listen((Event event) {
-      Map currentUser = event.snapshot.value;
-      //prefs.setString("currentUserName", currentUser['nome']);
-      prefs.setString("currentUserType", currentUser['usuario']);
-      setState(() {
-        loadUserInfo();
-      });
-    });
-  }
-
   Future loadUserInfo() async {
     StreamSubscription<Event> user = db
         .reference()
-        .child("usuarios")
-        .child("${prefs.getString("currentUserType")}")
+        .child("Usuários")
         .child(prefs.getString("currentUserId"))
         .onValue
         .listen((Event event) {
       Map currentUser = event.snapshot.value;
-      prefs.setString("currentUserName", currentUser['nome']);
-      //prefs.setString("currentUserType", currentUser['usuario']);
-      setState(() {
-        loadUserType();
-      });
+      prefs.setString("currentUserName", currentUser['Nome']);
+      prefs.setString("currentUserType", currentUser['Usuário']);
+      setState(() {});
     });
   }
 
@@ -105,9 +84,6 @@ class _HomeViewState extends State<HomeView> {
         padding: EdgeInsets.all(30),
         child: Column(
           children: [
-            SizedBox(
-              height: 40,
-            ),
             Text(
               prefs != null
                   ? "${prefs.getString("currentUserName")}"
@@ -121,23 +97,37 @@ class _HomeViewState extends State<HomeView> {
               style: Theme.of(context).textTheme.subtitle1,
             ),
             SizedBox(
-              height: 100,
+              height: 40,
             ),
-            Row(
-              children: <Widget>[
-                BotaoHome(
-                  icon: Icons.add_circle_outline,
-                  nome: "Meu Perfil",
-                  color: Colors.amber,
-                  proximo: PerfilView(),
-                  context: context,
+            Column(
+              children: [
+                Row(
+                  children: <Widget>[
+                    BotaoHome(
+                      icon: Icons.add_circle_outline,
+                      nome: "Meu Perfil",
+                      color: Colors.amber,
+                      proximo: PerfilView(),
+                      context: context,
+                    ),
+                    BotaoHome(
+                      icon: Icons.add_circle_outline,
+                      nome: "Consultas",
+                      color: Colors.blue,
+                      context: context,
+                      proximo: ConsultaView(),
+                    ),
+                  ],
                 ),
-                BotaoHome(
-                  icon: Icons.add_circle_outline,
-                  nome: "Consultas",
-                  color: Colors.blue,
-                  context: context,
-                  proximo: ConsultaView(),
+                Row(
+                  children: [
+                    BotaoHome(
+                        icon: Icons.add,
+                        nome: "Cobertura",
+                        color: Colors.grey,
+                        proximo: null,
+                        context: context),
+                  ],
                 ),
               ],
             ),

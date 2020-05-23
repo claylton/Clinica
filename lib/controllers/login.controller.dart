@@ -56,11 +56,9 @@ class LoginController {
       user = result.user;
 
       if (user != null) {
-        //Aqui vai um if se for médico cadastra os dados na tabela médico
-        //se for paciente cadastra na tabela paciente
         await FirebaseDatabase.instance
             .reference()
-            .child('usuarios')
+            .child('Usuários')
             .child(user.uid)
             .set({
           "nome": _nome,

@@ -5,19 +5,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class Medico {
+class Paciente {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseUser user;
 
   String _key;
   String _nome;
+  String _tipo = "Paciente";
+  String _nascimento;
+  String _telefone;
+  String _rg;
+  String _cpf;
   String _email;
   String _senha;
-  String _crm;
-  String _especialidade;
-  String _tipo;
 
-  Future<void> createMedico(BuildContext context) async {
+  Future<void> createPaciente(BuildContext context) async {
     try {
       AuthResult result = await auth.createUserWithEmailAndPassword(
           email: _email, password: _senha);
@@ -25,15 +27,18 @@ class Medico {
 
       await FirebaseDatabase.instance
           .reference()
-          .child('Médicos')
+          .child('Pacientes')
           .child(user.uid)
           .set(
         {
           "Nome": _nome,
           "Email": _email,
           "Senha": _senha,
-          "Usuário": "Médico",
-          "Especialidade": _especialidade,
+          "Usuário": "Paciente",
+          "Nascimento": _nascimento,
+          "Telefone": _telefone,
+          "Rg": _rg,
+          "Cpf": _cpf,
         },
       );
 
@@ -44,7 +49,7 @@ class Medico {
           .set(
         {
           "Nome": _nome,
-          "Usuário": "Médico",
+          "Usuário": "Paciente",
         },
       );
 
@@ -98,24 +103,40 @@ class Medico {
     this._senha = senha;
   }
 
-  String getCRM() {
-    return _crm;
+  String getNascimento() {
+    return _nascimento;
   }
 
-  void setCRM(String crm) {
-    this._crm = crm;
+  void setNascimento(String nascimento) {
+    this._nascimento = nascimento;
   }
 
-  String getEspecialidade() {
-    return _especialidade;
+  String getCPF() {
+    return _cpf;
   }
 
-  void setEspecialidade(String especialidade) {
-    this._especialidade = especialidade;
+  void setCPF(String cpf) {
+    this._cpf = cpf;
+  }
+
+  String getRg() {
+    return _rg;
+  }
+
+  void setRG(String rg) {
+    this._rg = rg;
   }
 
   String getTipo() {
     return _tipo;
+  }
+
+  String getTelefone() {
+    return _telefone;
+  }
+
+  void setTelefone(String telefone) {
+    this._telefone = telefone;
   }
 
   void setTipo(String tipo) {

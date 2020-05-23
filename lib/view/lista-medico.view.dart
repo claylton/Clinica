@@ -24,7 +24,7 @@ class _ListaMedicoState extends State<ListaMedico> {
 
   @override
   void initState() {
-    medico = new Medico("");
+    //medico = new Medico("");
     refMed = db.reference().child('usuarios');
     loadMedicos().then((value) {});
     super.initState();

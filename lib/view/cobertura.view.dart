@@ -1,17 +1,22 @@
-import 'package:clinica/models/medico.model.dart';
+import 'package:clinica/view/home.view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SignupMedicoView extends StatefulWidget {
+class Cobertura extends StatefulWidget {
   @override
-  _SignupMedicoViewState createState() => _SignupMedicoViewState();
+  _CoberturaState createState() => _CoberturaState();
 }
 
-class _SignupMedicoViewState extends State<SignupMedicoView> {
-  Medico medico = new Medico();
+class _CoberturaState extends State<Cobertura> {
   final _formKey = GlobalKey<FormState>();
   SharedPreferences prefs;
+
+  String _nomeCobertura;
+
+  FirebaseAuth auth = FirebaseAuth.instance;
 
   Future loadPref() async {
     return await SharedPreferences.getInstance();
@@ -21,7 +26,18 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      medico.createMedico(context);
+        await FirebaseDatabase.instance
+            .reference()
+            .child('cobertura')
+            .set({
+          "nome": _nomeCobertura,
+        });
+
+        FirebaseAuth.instance.signOut();
+
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => HomeView(),
+        ));
     }
   }
 
@@ -95,13 +111,13 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
                             }
                             return null;
                           },
-                          onSaved: (value) => medico.setNome(value),
+                          onSaved: (input) => _nomeCobertura = input,
                         ),
                         TextFormField(
                           // autofocus: true,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: "E-mail",
+                            labelText: "Nome Cobertura",
                             labelStyle: TextStyle(
                               color: Theme.of(context).primaryColor,
                               fontWeight: FontWeight.w400,
@@ -114,90 +130,14 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
                           ),
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'E-mail Inválido';
+                              return 'Cobertura Inválida';
                             }
                             return null;
                           },
-                          onSaved: (value) => medico.setEmail(value),
+                          onSaved: (value) => _nomeCobertura = value,
                         ),
                         SizedBox(
                           height: 10,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: "CRM",
-                            labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'CRM Inválido';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => medico.setCRM(value),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.text,
-                          decoration: InputDecoration(
-                            labelText: "Especialidade",
-                            labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Especialidade Inválida';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => medico.setEspecialidade(value),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        TextFormField(
-                          keyboardType: TextInputType.text,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: "Senha",
-                            labelStyle: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 16,
-                            ),
-                          ),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Senha Inválida';
-                            }
-                            return null;
-                          },
-                          onSaved: (value) => medico.setSenha(value),
-                        ),
-                        SizedBox(
-                          height: 40,
                         ),
                         Container(
                           width: double.infinity,
@@ -209,7 +149,7 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
                           ),
                           child: FlatButton(
                             child: Text(
-                              "Signup",
+                              "adicionar",
                               style: TextStyle(
                                 color: Colors.white,
                               ),
