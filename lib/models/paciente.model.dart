@@ -9,7 +9,7 @@ class Paciente {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseUser user;
 
-  String _key;
+  String _userId;
   String _nome;
   String _tipo = "Paciente";
   String _nascimento;
@@ -71,12 +71,20 @@ class Paciente {
     }
   }
 
-  String getKey() {
-    return _key;
+  String getUserId() {
+    var user = FirebaseAuth.instance.currentUser();
+    user.then((current) {
+      _userId = current.uid;
+    });
+    if (_userId == null) {
+      return "";
+    } else {
+      return _userId;
+    }
   }
 
   void setKey(String key) {
-    this._key = key;
+    this._userId = key;
   }
 
   String getNome() {

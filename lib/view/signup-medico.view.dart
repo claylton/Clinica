@@ -1,3 +1,4 @@
+import 'package:clinica/models/consulta.model.dart';
 import 'package:clinica/models/medico.model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ class SignupMedicoView extends StatefulWidget {
 
 class _SignupMedicoViewState extends State<SignupMedicoView> {
   Medico medico = new Medico();
+  Consulta consulta = new Consulta();
   final _formKey = GlobalKey<FormState>();
   SharedPreferences prefs;
 
@@ -22,6 +24,7 @@ class _SignupMedicoViewState extends State<SignupMedicoView> {
       _formKey.currentState.save();
 
       medico.createMedico(context);
+      //consulta.createConsulta(context);
     }
   }
 

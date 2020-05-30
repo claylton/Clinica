@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:clinica/models/consulta.model.dart';
 import 'package:clinica/models/medico.model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -11,21 +11,21 @@ class ListaMedico extends StatefulWidget {
 }
 
 class _ListaMedicoState extends State<ListaMedico> {
-  final _formKey = GlobalKey<FormState>();
-
-  String nomeMedico;
+  DateTime data;
+  String nomeMedico = "";
+  String espeMedico = "";
   SharedPreferences prefs;
   DatabaseReference refMed =
-      FirebaseDatabase.instance.reference().child("usuarios");
+      FirebaseDatabase.instance.reference().child("Usuários");
 
   var medicoList = [];
   Medico medico;
+  Consulta consulta = new Consulta();
   final FirebaseDatabase db = FirebaseDatabase.instance;
 
   @override
   void initState() {
-    //medico = new Medico("");
-    refMed = db.reference().child('usuarios');
+    refMed = db.reference().child('Usuários');
     loadMedicos().then((value) {});
     super.initState();
   }
@@ -33,8 +33,7 @@ class _ListaMedicoState extends State<ListaMedico> {
   Future<Null> loadMedicos() async {
     await FirebaseDatabase.instance
         .reference()
-        .child('usuarios')
-        .child('Médico')
+        .child('Médicos')
         .once()
         .then((DataSnapshot snapshot) {
       Map<dynamic, dynamic> values = snapshot.value;
@@ -48,33 +47,9 @@ class _ListaMedicoState extends State<ListaMedico> {
     });
   }
 
-  Future loadUserType() async {
-    StreamSubscription<Event> user = db
-        .reference()
-        .child("usuarios")
-        .child(prefs.getString("currentUserId"))
-        .onValue
-        .listen((Event event) {
-      Map currentUser = event.snapshot.value;
-      //prefs.setString("currentUserName", currentUser['nome']);
-      prefs.setString("currentUserType", currentUser['usuario']);
-      setState(() {});
-    });
-  }
-
-  Future loadUserInfo() async {
-    StreamSubscription<Event> user = db
-        .reference()
-        .child("usuarios")
-        .child("${prefs.getString("currentUserType")}")
-        .child(prefs.getString("currentUserId"))
-        .onValue
-        .listen((Event event) {
-      Map currentUser = event.snapshot.value;
-      prefs.setString("currentUserName", currentUser['nome']);
-      //prefs.setString("currentUserType", currentUser['usuario']);
-      setState(() {});
-    });
+  Future<void> newConsulta(context, nomeMedico, espeMedico, data) async {
+    //medico.getKey();
+    consulta.createConsulta(context, nomeMedico, espeMedico, data);
   }
 
   @override
@@ -91,30 +66,58 @@ class _ListaMedicoState extends State<ListaMedico> {
         itemCount: medicoList.length,
         itemBuilder: (context, index) {
           var medico = medicoList[index];
-          print(medicoList);
-          return Row(
-            children: <Widget>[
-              Expanded(
-                child: FlatButton(
-                  padding: EdgeInsets.all(18),
-                  child: Text(
-                    medico != null
-                        ? "${medico['nome']} - ${medico['Especialidade']}"
-                        : "AAA",
+          //print(medicoList);
+          return Container(
+            padding: EdgeInsets.only(left: 10.0, right: 5.0),
+            height: 100,
+            width: 30,
+            child: Card(
+              color: Colors.green,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              elevation: 0.0,
+              child: ListTile(
+                isThreeLine: true,
+                title: Text("${medico['Nome']}",
                     style: TextStyle(
-                      fontSize: 20,
-                    ),
-                  ),
-                  shape: Border(
-                    bottom: BorderSide(
-                      color: Colors.black12,
-                    ),
-                  ),
-                  splashColor: Colors.black12,
-                  onPressed: () => null,
+                        color: Colors.white,
+                        fontFamily: 'Kanit',
+                        fontSize: 25.0)),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(" - ${medico['Especialidade']}",
+                        style: TextStyle(
+                            color: Colors.blueGrey[50], fontFamily: 'Kanit')),
+                    // Text(" - ${medico['CRM']}",
+                    //     style: TextStyle(
+                    //         color: Colors.blueGrey[50], fontFamily: 'Kanit')),
+                  ],
                 ),
-              )
-            ],
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                onTap: () => {
+                  print("${medico['Nome']}"),
+                  //var teste = [{}];
+                  nomeMedico = medico['Nome'],
+                  espeMedico = medico['Especialidade'],
+                  // setState(() {
+                  //   nomeMedico = "${medico['Nome']}";
+                  //   espeMedico = "${medico['Especialidade']}";
+                  // }),
+                  consulta.selectDate(context).then((dataParametro) {
+                    setState(() {
+                      this.data = dataParametro;
+                    });
+                  }),
+                  newConsulta(context, nomeMedico, espeMedico, data),
+                  Navigator.pushNamed(context, '/consultas'),
+                },
+              ),
+            ),
           );
         },
       ),

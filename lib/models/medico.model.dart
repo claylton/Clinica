@@ -9,7 +9,7 @@ class Medico {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseUser user;
 
-  String _key;
+  //String _key;
   String _nome;
   String _email;
   String _senha;
@@ -67,12 +67,12 @@ class Medico {
   }
 
   String getKey() {
-    return _key;
+    return user.uid;
   }
 
-  void setKey(String key) {
-    this._key = key;
-  }
+  // void setKey(String key) {
+  //   this.user.uid = key;
+  // }
 
   String getNome() {
     return _nome;

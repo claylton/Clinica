@@ -1,4 +1,5 @@
 import 'package:clinica/components/button.widget.dart';
+import 'package:clinica/models/consulta.model.dart';
 import 'package:clinica/widgets/lista-consultas.widget.dart';
 import 'package:clinica/view/lista-medico.view.dart';
 import 'package:flutter/material.dart';
@@ -11,27 +12,28 @@ class ConsultaView extends StatefulWidget {
 
 class _ConsultaViewState extends State<ConsultaView> {
   // String _nome;
-  // DateTime _date;
+  //DateTime _date;
 
+  Consulta consulta = new Consulta();
   final _formKey = GlobalKey<FormState>();
   final _dateFormat = new DateFormat('dd/MM/yyyy');
 
   String nomeConsulta = "";
-  DateTime date = DateTime.now();
+  DateTime data = DateTime.now();
 
-  Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
-      context: context,
-      initialDate: date,
-      firstDate: DateTime(2000, 1),
-      lastDate: DateTime(2099),
-    );
-    if (picked != null && picked != date) {
-      setState(() {
-        date = picked;
-      });
-    }
-  }
+  // Future<Null> selectDate(BuildContext context) async {
+  //   final DateTime picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: date,
+  //     firstDate: DateTime(2000, 1),
+  //     lastDate: DateTime(2099),
+  //   );
+  //   if (picked != null && picked != date) {
+  //     setState(() {
+  //       date = picked;
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,7 @@ class _ConsultaViewState extends State<ConsultaView> {
                       top: 20,
                     ),
                     child: Text(
-                      _dateFormat.format(date),
+                      _dateFormat.format(data),
                       style: TextStyle(
                           color: Theme.of(context).primaryColor,
                           fontSize: 34,
@@ -69,7 +71,11 @@ class _ConsultaViewState extends State<ConsultaView> {
                   ),
                   FlatButton(
                     onPressed: () {
-                      _selectDate(context);
+                      consulta.selectDate(context).then((dataParametro) {
+                        setState(() {
+                          this.data = dataParametro;
+                        });
+                      });
                     },
                     child: Text('Escolher Data'),
                   ),

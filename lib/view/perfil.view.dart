@@ -42,7 +42,7 @@ class _PerfilViewState extends State<PerfilView> {
 
       await db
           .reference()
-          .child('usuarios')
+          .child('Usuários')
           .child("${prefs.getString("currentUserType")}")
           .child(user.uid)
           .update({
@@ -81,7 +81,7 @@ class _PerfilViewState extends State<PerfilView> {
   Future loadUserInfo() async {
     StreamSubscription<Event> user = db
         .reference()
-        .child("usuarios")
+        .child("Usuários")
         .child("${prefs.getString("currentUserType")}")
         .child(prefs.getString("currentUserId"))
         .onValue

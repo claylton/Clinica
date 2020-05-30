@@ -1,4 +1,5 @@
 import 'package:clinica/themes/green.theme.dart';
+import 'package:clinica/view/consulta.view.dart';
 import 'package:clinica/view/login.view.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,20 @@ class MyApp extends StatelessWidget {
       title: 'Clínica Saitama',
       debugShowCheckedModeBanner: false,
       theme: greenTheme(),
-      home: LoginView(),
+      initialRoute: './',
+      routes: <String, WidgetBuilder>{
+        '/': (context) => LoginView(),
+        '/consultas': (context) => ConsultaView(),
+        //    '/set_up': (context) => SetUpData(),
+        //    '/picture': (context) => Picture(),
+        //    '/homepage': (context) => HomePage(),
+        //    '/slides': (context) => FirestoreSlideShow(),
+        //    '/classes': (context) => Classes(),
+        //    '/croom': (context) => Classroom(),
+        //    '/chat_screen': (context) => ChatScreen(),
+        //    '/calendar': (context) => CalendarPage(),
+        //    '/studentProfile': (context) => StudentProfile(),
+      },
     );
   }
 }

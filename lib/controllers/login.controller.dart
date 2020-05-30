@@ -70,7 +70,7 @@ class LoginController {
         if (_tipo == "Médico") {
           await FirebaseDatabase.instance
               .reference()
-              .child('usuarios')
+              .child('Usuários')
               .child('Médico')
               .child(user.uid)
               .set({
